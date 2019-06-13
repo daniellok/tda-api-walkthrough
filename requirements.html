@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang=en>
+  <head>
+    <!-- Required -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+
+    <!-- Description -->
+    <meta name="description" content="TDA API Walkthrough" />
+    <title>TDA API Walkthrough</title>
+</head>
+
+  <body>
+    <div class="section columns is-fullheight">
+
+      <!-- Navigation Menu -->
+      <aside class="menu column is-narrow is-fullheight is-hidden-mobile" style="position: fixed; width: 250px">
+	<ul class="menu-list">
+	  <li><a href="/">Introduction</a>
+	    <ul>
+	      <li><a class="is-active">Requirements</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/background">Backround Info</a>
+	    <ul>
+	      <li><a href="/background/command-line">Command Line & Git</a></li>
+	      <li><a href="/background/databases">Databases</a></li>
+	      <li><a href="/background/http-requests">HTTP Requests</a></li>
+	      <li><a href="/background/auth-tokens">Auth Tokens</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/building">Building the App</a>
+	    <ul>
+	      <li><a href="building/authentication">Authentication</a></li>
+	      <li><a href="/building/data-retrieval">Data Retrieval</a></li>
+	      <li><a href="/building/saving-to-disk">Saving to Disk</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/visualization">Data Visualization</a>
+	</ul>
+      </aside>
+      <div class="column is-narrow is-fullheight is-hidden-mobile" style="width: 250px"></div>
+
+      <!-- Content -->
+      <div class="container column is-fullheight is-marginless content">
+	<h1 class="title is-2">Requirements</h1>
+	<p>Before we get started, you'll need to have a few things installed.</p>
+
+	<h2>
+	  <a href="https://gitforwindows.org/">Git Bash</a>
+	</h2>
+	<p>We'll be using Git as a <b>source-control</b> tool. Source control is how we keep track of the changes we make to our code. Git allows us to do stuff like back up old versions of our code, see line-by-line differences between versions, and collaborate. This is the standard way that programmers build projects.</p>
+	<p>Git Bash is just an installation of Git for Windows. It provides a Unix-like terminal (i.e. the ones used on MacOS and Linux) so you don't have to worry about the commands being different. In this walkthrough, when I mention the "terminal" or the "command line", I mean that you should enter the commands in the Git Bash terminal. Unix-like terminals typically have a dollar sign (<code>$</code>) at the place where you're supposed to type commands, so if you see me type something like:</p>
+
+	<pre><code>
+$ echo "hello"
+hello
+$ echo "goodbye"
+goodbye
+	</code></pre>
+
+	<p>The stuff <i>after</i> the <code>$</code> is what you should be typing. The stuff under it is the output you should receive.</p>
+	
+	<h2>
+	  <a href="https://www.python.org/downloads/">Python 3</a>
+	</h2>
+	<p>This is our main working language. You probably already have it installed, but in case you don't, go get it!</p>
+	
+	<h2>
+	  <a href="https://2.python-requests.org/en/master/">Requests</a>
+	</h2>
+	<p>Requests is a third-party Python <b>package</b> (also known as a library) used to handle HTTP requests. Since it's not included with Python by default, we'll have to install it separately. Thankfully, this is super easy in Python.</p>
+
+	<p>Python comes with a <b>package manager</b> called <code>pip</code>. A package manager is, as the name implies, a program to install, uninstall, and update packages. </p>
+
+	<!-- Nav Footer -->
+	<nav class="level" style="padding-top: 30px">
+	  <div class="level-item level-left">
+	    <a class="button is-outlined is-borderless is-info"
+	       href="/">
+	      <span class="icon">
+		<i class="fas fa-angle-left"></i>
+	      </span>
+	      <span>Introduction</span>
+	    </a>
+	  </div>
+	  <div class="level-item level-right">
+	    <a class="button is-outlined is-borderless is-info"
+	       href="/background">
+	      <span>Background Information</span>
+	      <span class="icon">
+		<i class="fas fa-angle-right"></i>
+	      </span>
+	    </a>
+	  </div>
+	</nav>
+	
+    </div>
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang=en>
+  <head>
+    <!-- Required -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="../css/styles.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+
+    <!-- Description -->
+    <meta name="description" content="TDA API Walkthrough" />
+    <title>TDA API Walkthrough</title>
+</head>
+
+  <body>
+    <div class="section columns is-fullheight">
+
+      <!-- Navigation Menu -->
+      <aside class="menu column is-narrow is-fullheight is-hidden-mobile" style="position: fixed; width: 250px">
+	<ul class="menu-list">
+	  <li><a href="/">Introduction</a>
+	    <ul>
+	      <li><a href="/requirements">Requirements</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/background">Backround Info</a>
+	    <ul>
+	      <li><a href="/background/command-line">Command Line & Git</a></li>
+	      <li><a href="/background/databases">Databases</a></li>
+	      <li><a href="/background/http-requests">HTTP Requests</a></li>
+	      <li><a href="/background/auth-tokens">Auth Tokens</a></li>
+	    </ul>
+	  </li>
+	  <li><a class="is-active">Building the App</a>
+	    <ul>
+	      <li><a href="building/authentication">Authentication</a></li>
+	      <li><a href="/building/data-retrieval">Data Retrieval</a></li>
+	      <li><a href="/building/saving-to-disk">Saving to Disk</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/visualization">Data Visualization</a>
+	</ul>
+      </aside>
+      <div class="column is-narrow is-fullheight is-hidden-mobile" style="width: 250px"></div>
+
+      <!-- Content -->
+      <div class="container column is-fullheight is-marginless content">
+	<h1 class="title is-2">Building the App</h1>
+
+	<!-- Nav Footer -->
+	<nav class="level" style="padding-top: 30px">
+	  <div class="level-item level-left">
+	    <a class="button is-outlined is-borderless is-info"
+	       href="/background/auth-tokens">
+	      <span class="icon">
+		<i class="fas fa-angle-left"></i>
+	      </span>
+	      <span>Auth Tokens</span>
+	    </a>
+	  </div>
+	  <div class="level-item level-right">
+	    <a class="button is-outlined is-borderless is-info"
+	       href="/building/authentication">
+	      <span>Authentication</span>
+	      <span class="icon">
+		<i class="fas fa-angle-right"></i>
+	      </span>
+	    </a>
+	  </div>
+	</nav>
+	
+    </div>
+  </body>
+</html>

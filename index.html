@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang=en>
+  <head>
+    <!-- Required -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    
+    <!-- Description -->
+    <meta name="description" content="TDA API Walkthrough" />
+    <title>TDA API Walkthrough</title>
+</head>
+
+  <body>
+    <div class="section columns is-fullheight">
+
+      <!-- Navigation Menu -->
+      <aside class="menu column is-narrow is-fullheight is-hidden-mobile" style="position: fixed; width: 250px">
+	<ul class="menu-list">
+	  <li><a class="is-active">Introduction</a>
+	    <ul>
+	      <li><a href="/requirements">Requirements</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/background">Backround Info</a>
+	    <ul>
+	      <li><a href="/background/databases">Databases</a></li>
+	      <li><a href="/background/http-requests">HTTP Requests</a></li>
+	      <li><a href="/background/auth-tokens">Auth Tokens</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/building">Building the App</a>
+	    <ul>
+	      <li><a href="building/authentication">Authentication</a></li>
+	      <li><a href="/building/data-retrieval">Data Retrieval</a></li>
+	      <li><a href="/building/saving-to-disk">Saving to Disk</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/visualization">Data Visualization</a>
+	</ul>
+      </aside>
+      <div class="column is-narrow is-fullheight is-hidden-mobile" style="width: 250px"></div>
+
+      <!-- Content -->
+      <div class="container column is-fullheight is-marginless content">
+	<h1 class="title is-2">Welcome!</h1>
+	<p>This page will take you through the process of building a small script to pull, save, and visualize data from TD Ameritrade's API.</p>
+
+	<p>You'll be doing most of the work yourself! I've tried my best to exclude as much code as possible while still making the walkthrough easy to follow. However, the guide is probably not perfect, so if I've used any terms you aren't sure about, or if you need any additional explanation about a topic, please don't hesistate to ask me about it. This project touches on a lot of different areas, so I'd expect that there will be quite a few questions.</p>
+
+	<p>Our main goals are to:</p>
+	<ul>
+	  <li>Collect daily data of our portfolio's value and positions</li>
+	  <li>Automate the process of data collection as much as possible</li>
+	  <li>Generate a graph to visualize the data</li>
+	</ul>
+
+	<!-- Nav Footer -->
+	<nav class="level" style="padding-top: 30px">
+	  <div class="level-item level-right">
+	    <a class="button is-outlined is-borderless is-info"
+	       href="/requirements">
+	      <span>Requirements</span>
+	      <span class="icon">
+		<i class="fas fa-angle-right"></i>
+	      </span>
+	    </a>
+	  </div>
+	</nav>
+	
+      </div>
+    </div>
+  </body>
+</html>
