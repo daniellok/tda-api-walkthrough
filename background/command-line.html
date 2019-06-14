@@ -8,10 +8,12 @@
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="../css/styles.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    
     <!-- Highlight.js -->
     <link rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
     <!-- Description -->
     <meta name="description" content="TDA API Walkthrough" />
@@ -44,7 +46,7 @@
 	      <li><a href="/tda-api-walkthrough/building/saving-to-disk">Saving to Disk</a></li>
 	    </ul>
 	  </li>
-	  <li><a href="/tda-api-walkthrough/visualization">Data Visualization</a>
+	  <li><a href="/tda-api-walkthrough/visualization">Data Visualization</a></li>
 	</ul>
       </aside>
       <div class="column is-narrow is-fullheight is-hidden-mobile" style="width: 250px"></div>
@@ -52,6 +54,54 @@
       <!-- Content -->
       <div class="container column is-fullheight is-marginless content">
 	<h1 class="title is-2">Background Info: Command Line & Git</h1>
+	<h2 class="title">Command Line</h2>
+	<p>Usually in the course of building a project, we make use of the command line to run scripts and programs. Programmers often build tools that don't have a GUI (as we are doing now), and in those cases the terminal is the only place we can use the tools we need. We won't be doing anything too complex, but there are a few common commands used in Unix shells (such as Git bash) that are good to know.</p>
+
+	<p>Commands usually follow the following format: <code>[command name] [options/flags] [arguments]</code>. The <code>command name</code> is self-explanatory, but what about the other two?</p>
+	
+	<p><b>Options</b> or <b>flags</b> are arguments we provide to make the command behave a bit differently. As their name implies, they're optional, so most of the time you won't have to bother about writing anything. However, I've included some information for your general knowledge. Options are prefixed with one or two dashes (<code>-</code> or <code>--</code>). Here's an example, using the <code>ls</code> command, which lists all files in the current directory:</p>
+
+	<pre><code class="bash">
+$ ls
+example_folder file1.txt      file2.txt
+$ ls -l	
+total 16
+drwxr-xr-x  2 daniellok  staff  64 Jun 14 14:23 example_folder
+-rw-r--r--  1 daniellok  staff  41 Jun 14 14:23 file1.txt
+-rw-r--r--  1 daniellok  staff  12 Jun 14 14:22 file2.txt
+	</code></pre>
+
+	<p>As you can see, the addition of the <code>-l</code> option makes the command not only list all the files, but also their metadata (e.g. size, permissions, creation date).</p>
+
+	<p><b>Arguments</b> are anything else that the command needs&mdash;for example, when executing the command to delete a file, you need to specify the file's name as an argument. This is pretty much the same as an argument to a function in typical programming jargon.</p>
+
+	<p>Here is a list of commands that you'll probably find yourself using a lot:</p>
+	<ul>
+	  <li><code>ls</code>: <b>l</b>i<b>s</b>ts the files in the current directory</li>
+	  <li><code>cd [directory name]</code>: <b>c</b>hange <b>d</b>irectory to the one specified</li>
+	  <li><code>mkdir [directory name]</code>: <b>m</b>a<b>k</b>e a <b>dir</b>ectory with the specified name</li>
+	  <li><code>rm [file name]</code>: <b>r</b>e<b>m</b>oves the specified file (add the <code>-r</code> option to delete folders)</li>
+	  <li><code>cat [file name]</code>: display the contents of a file (useful if you want to check a file without having to open it in your editor)</li>
+	</ul>
+
+	<h2 class="title">Git</h2>
+	<p>As mentioned in the <a href="/tda-api-walkthrough/requirements">Requirements</a> page, Git will be our source control tool. I'd recommend looking at a <a href="https://rogerdudler.github.io/git-guide/">guide</a>, but honestly, even though I did a couple of Git tutorials, it still took me about a year to be comfortable enough that I don't have to google every command. Don't hesitate to ask questions if you're not sure how to use it, I get that it can be really confusing if you've never used it before.</p>
+
+	<p>That being said, here are the steps to start our project:</p>
+	<ol>
+	  <li><code>cd</code> into the folder you want to start this project in.</li>
+	  <li>Enter <code>git clone https://github.com/daniellok/tda-api-walkthrough.git</code>. This copies our <code>tda-api-walkthrough</code> repository from GitHub onto your computer.</li>
+	  <li><code>cd tda-api-walkthrough</code> and <code>ls</code>. You should only see a file called <code>readme.md</code>. All the code will be provided by you 😊.</li>
+	</ol>
+
+	We'll be creating a lot of files throughout this project, and we'll want to upload them to GitHub. Official changes to a repo (e.g. additions, deletion), are called <b>commits</b>. To make commits to our repo, you'll need to do a few things:
+	<ol>
+	  <li><code>git add [filename]</code>. This adds the specified file to a list of stuff to be committed (you can add multiple files in one commit).</li>
+	  <li><code>git commit -m "[message]"</code>. This commits all added files, and adds a commit message (typically these describe what changes you've made).</li>
+	  <li><code>git push origin master</code>. This uploads your commit to GitHub, so I'll be able to see it as well. Note that pushing to the <code>master</code> branch is considered bad practice&mdash;the <code>master</code> branch is supposed to be reserved for peer-reviewed code which is stable. Individual changes should be done on your own branch. However, this is a small project so it's not really that important here.</li>
+	</ol>
+
+	I'd expect there to be some hiccups along the way, but no worries! It's all part of the learning process.
 
 	<!-- Nav Footer -->
 	<nav class="level" style="padding-top: 30px">
