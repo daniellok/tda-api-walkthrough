@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang=en>
+  <head>
+    <!-- Required -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="../css/styles.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    
+    <!-- Description -->
+    <meta name="description" content="TDA API Walkthrough" />
+    <title>TDA API Walkthrough</title>
+</head>
+
+  <body>
+    <div class="section columns is-fullheight">
+      
+      <!-- Navigation Menu -->
+      <aside class="menu column is-narrow is-fullheight is-hidden-mobile" style="position: fixed; width: 250px">
+	<ul class="menu-list">
+	  <li><a href="/tda-api-walkthrough">Introduction</a>
+	    <ul>
+	      <li><a href="/tda-api-walkthrough/requirements">Requirements</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/tda-api-walkthrough/background">Backround Info</a>
+	    <ul>
+	      <li><a href="/tda-api-walkthrough/background/command-line">Command Line & Git</a></li>
+	      <li><a href="/tda-api-walkthrough/background/databases">Databases</a></li>
+	      <li><a href="/tda-api-walkthrough/background/http-requests">HTTP Requests</a></li>
+	      <li><a class="is-active">OAuth 2.0</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/tda-api-walkthrough/building">Building the App</a>
+	    <ul>
+	      <li><a href="/tda-api-walkthrough/building/authentication">Authentication</a></li>
+	      <li><a href="/tda-api-walkthrough/building/data-retrieval">Data Retrieval</a></li>
+	      <li><a href="/tda-api-walkthrough/building/saving-to-disk">Saving to Disk</a></li>
+	    </ul>
+	  </li>
+	  <li><a href="/tda-api-walkthrough/visualization">Data Visualization</a></li>
+	</ul>
+      </aside>
+      <div class="column is-narrow is-fullheight is-hidden-mobile" style="width: 250px"></div>
+
+      <!-- Content -->
+      <div class="container column is-fullheight is-marginless content">
+	<h1 class="title is-2">Background Information: OAuth 2.0</h1>
+
+	<p>In this section, we'll briefly describe the flow of the OAuth 2.0 authentication protocol. We don't necessarily need to know the details in order to use the API, but this information helps to clarify why certain parts of the process are structured the way they are.</p>
+
+	<h3 class="title">OAuth 2.0 Roles</h3>
+	<ol>
+	  <li><p><b>Resource Owner.</b> This is you. In the example of the TDA API, your "resource" is your account, and you own it.</p></li>
+	  <li><p><b>Client.</b> This is your app. The client is the thing that wants to interact with your data.</p></li>
+	  <li><p><b>Authentication Server.</b> This is the server that grants you access to your data.</p></li>
+	  <li><p><b>Resource Server.</b> This is the server that actually gives you your data.</p></li>
+	</ol>
+
+	<h3 class="title">OAuth 2.0 Protocol Flow</h3>
+	<ol>
+	  <li><p>The client asks the resource owner to grant it authorization to use their data. Typically, this is done by clicking on a link to an <b>authorization URL</b>.</p></li>
+	  <li><p>The resource owner grants the client authorization. The authorization URL in the previous step usually leads to a manual log-in page. The act of logging in yields an <b>authorization grant</b>&mdash;a token which is proof that you have granted the client access.</p></li>
+	  <li><p>The client presents the grant to the authentication server. We don't log in through the client directly because there may be situations where we don't own the app. In these cases, we might not want to expose our username and password to a third party.</p></li>
+	  <li><p>If the authorization grant checks out, then the server responds with an <b>authorization token</b> (auth token for short). The client can now use this token to pull data from the API. This may seem a bit roundabout&mdash;why not just use the authorization grant as the auth token? I was wondering about this as well, but this is the justification from the <a href="https://tools.ietf.org/html/rfc6749#section-1.2">official specification</a>:</p>
+	    <blockquote>The authorization code provides a few important security benefits, such as the ability to authenticate the client, as well as the transmission of the access token directly to the client without passing it through the resource owner's user-agent and potentially exposing it to others, including the resource owner.</blockquote>
+	  <p>Ultimately, we don't have to think too hard about this&mdash;it seems like everyone is just kept on a need-to-know basis, which is a good thing.</p></li>
+	  <li><p>The client is now able to make requests to the resource server. In every request, the client must include its auth token in a header as proof that it has been granted access. This token expires every once in a while, so it will have to be renewed now and again through the use of a <b>refresh token</b>. The refreshing can be done directly by the client, without having to go through the resource owner again.</p></li>
+	  <li><p>When the resource server receives a request from a client with a valid auth token, it responds with the requested data.</p></li>
+	</ol>
+
+	<!-- Nav Footer -->
+	<nav class="level" style="padding-top: 30px">
+	  <div class="level-item level-left">
+	    <a class="button is-outlined is-borderless is-info"
+	       href="/tda-api-walkthrough/background/http-requests">
+	      <span class="icon">
+		<i class="fas fa-angle-left"></i>
+	      </span>
+	      <span>HTTP Requests</span>
+	    </a>
+	  </div>
+	  <div class="level-item level-right">
+	    <a class="button is-outlined is-borderless is-info"
+	       href="/tda-api-walkthrough/building">
+	      <span>Building the App</span>
+	      <span class="icon">
+		<i class="fas fa-angle-right"></i>
+	      </span>
+	    </a>
+	  </div>
+	</nav>
+      </div>
+      
+    </div>
+  </body>
+</html>
