@@ -54,6 +54,36 @@
       <div class="container column is-fullheight is-marginless content">
 	<h1 class="title is-2">Background Information: Databases</h1>
 
+	<p>Databases are a fundamental part of many applications, and ours will be no different. Since we'll be pulling data from TDA's API, we'll naturally need somewhere to store the data. Of course, we could just dump it all into some <code>.txt</code> or <code>.json</code> file, but we wouldn't learn much by doing so. Furthermore, that approach wouldn't scale very well, because once we get into the order of thousands of data points, retrieving data from our file would become very slow.</p>
+	<p>To be honest, if we're only pulling data once a day, we probably wouldn't hit that limit, but the goal here is to learn something which we can actually use in a real software project. Plus, if we suddenly decide that we want to pull data once an hour instead, the transition would be relatively painless.</p>
+	<p>Below is a list of common database models, and how they work. In general, they are all engineered such that saving (writing) and retrieving (reading) from the database is fast even as our data grows to the gigabyte scale. At the end of this page, I provide a small comparison between the types, and explain which choice fits best for our purpose.</p>
+
+	<h2 class="title">Relational (SQL) Databases</h2>
+	<h3 class="title">Structure</h3>
+	<p>Relational databases are one of the most (if not the most) common types of databases. They organize data into <b>tables</b> with strictly-defined <b>schema</b>.</p>
+
+	<p>A table is similar to what you'd find in a spreadsheet: a data structure with rows and columns. Each row in a table represents a point of data, and each column is a category of some sort. A column could be something like <code>username</code>, or <code>price</code>, or <code>location</code>. Additionally, each table has one column which is designated the <b>primary key</b>&mdash;think of it like an ID which uniquely identifies each row. This means that data in the primary key column <b>cannot be repeated</b> (for example, a user ID). Lastly, it's important to note that each column has a strict <b>type</b>. For example, you would not be able to put <code>number</code> data into a column of type <code>text</code>.</p>
+
+	<p>A schema is simply a description of a database's structure. This could include its tables (including their columns and types), but also any <b>relations</b> between tables. This is where the name "relational database" derives from. We describe relations between tables with <b>foreign keys</b>. Take a look at <a href="https://www.w3schools.com/sql/sql_foreignkey.asp">this link</a>&mdash;it provides a good example.</p>
+
+	<h3 class="title">Interacting with Relational Databases</h3>
+	<p>Managing the data in a relational database is (in general) done through SQL (Structured Query Language). You can think of SQL as the programming language we use to retrieve, create, and delete data from our database's tables. In my opinion, it's good for every programmer to know at least a little bit of SQL, but to be honest, most major languages nowadays have implementations of <b>Object-Relational Mappings (ORMs)</b>. For example, a Python ORM would allow you to interact with a database in Python instead of SQL&mdash;it <i>maps</i> the <i>relational</i> database tables to Python <i>objects</i> (hence the name).</p>
+
+	<p>Some examples of Python ORMs include <a href="https://www.sqlalchemy.org/">SQLAlchemy</a>, <a href="https://docs.djangoproject.com/en/2.2/topics/install/">Django</a> (it includes an ORM but is also a full-fledged framework to build web apps), and <a href="https://github.com/coleifer/peewee">peewee</a>. It might be worth your time to learn one, but I have no experience in any of them so I won't be able to advise you much.</p>
+	
+	<h2 class="title">Non-relational (NoSQL) Databases</h2>
+	<p>The other major database model is the non-relational database. There are many different types, but some of the most popular ones (e.g. <a href="https://docs.mongodb.com/manual/introduction/">MongoDB</a>) are known as <b>document</b> or <b>document-oriented databases</b>. Instead of tables, document databases organize your data into <b>collections</b> of <b>documents</b>.</p>
+	<p>A collection is roughly analogous to a table. That is to say, you'd keep all similar data together as part of one collection. In this system, instead of "rows", data entries are called "documents". Documents look a lot like Python dictionaries in that they are simply data structures made up of <b>key-value pairs</b>.</p>
+
+	<p>As a result of not having tables, we generally don't need to define a strict schema for our data. Of course, we can if we want&mdash;most mature document-oriented databases provide some sort of <b>document validation</b> functionality. However, some applications might benefit from the looser nature of a non-relational database. A common use-case for NoSQL is in collecting large volumes of data from your users (e.g. logging). You might think of a new statistic to track every other week, so your schema would be constantly changing. Alternatively, if you're collecting input from users, some fields may be invalid or missing. Such cases would be very difficult to work with in a traditional relational database.</p>
+	
+	<h2 class="title">Embedded Databases</h2>
+	<p>The two database models mentioned above encompass pretty much all popular database solutions. Embedded databases are therefore not really a separate category <i>per se</i>, since you can have an embedded SQL database such as <a href="https://www.sqlite.org/index.html">SQLite</a>, or an embedded NoSQL database such as <a href="https://github.com/msiemens/tinydb">TinyDB</a>. However, I'm including this as a separate section because embedded databases are implemented slightly differently from regular databases, and have a distinct use-case.</p>
+
+	<p> Ordinarily, databases are meant to run on a server by themselves, and they typically require that you execute a separate <b>database server process</b> to manage interactions. This means that your computer will be running a program in the background all the time. Of course, if we're not interacting with our database that much, the resource consumption will not be very high, but it seems over-engineered and awkward to have a constant server process running for a script that we'll be using once a day.</p>
+
+	<p>The alternative to this is to have an <b>embedded database</b>. An embedded database is essentially just a file on your computer, but it comes with a program that makes interacting with it much faster and more convenient than simply reading and writing to a <code>.txt</code> or <code>.json</code> file on your own. This makes it ideal for programs which simply need a place to store their data. Tons of applications use SQLite as their database&mdash;the Notes app on MacOS is one example.</p>
+
 	<!-- Nav Footer -->
 	<nav class="level" style="padding-top: 30px">
 	  <div class="level-item level-left">

@@ -10,8 +10,9 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <!-- Highlight.js -->
     <link rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/atom-one-dark-reasonable.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
     <!-- Description -->
     <meta name="description" content="TDA API Walkthrough" />
@@ -60,7 +61,7 @@
 	<p>We'll be using Git as a <b>source-control</b> tool. Source control is how we keep track of the changes we make to our code. Git allows us to do stuff like back up old versions of our code, see line-by-line differences between versions, and collaborate. This is the standard way that programmers build projects.</p>
 	<p>Git Bash is just an installation of Git for Windows. It provides a Unix-like terminal (i.e. the ones used on MacOS and Linux) so you don't have to worry about the commands being different. In this walkthrough, when I mention the "terminal" or the "command line", I mean that you should enter the commands in the Git Bash terminal. Unix-like terminals typically have a dollar sign (<code>$</code>) at the place where you're supposed to type commands, so if you see me type something like:</p>
 
-	<pre><code>
+	<pre class="is-paddingless"><code class="shell" style="padding-left:20px; padding-right:20px">
 $ echo "hello"
 hello
 $ echo "goodbye"
