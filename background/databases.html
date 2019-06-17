@@ -83,6 +83,17 @@
 	<p> Ordinarily, databases are meant to run on a server by themselves, and they typically require that you execute a separate <b>database server process</b> to manage interactions. This means that your computer will be running a program in the background all the time. Of course, if we're not interacting with our database that much, the resource consumption will not be very high, but it seems over-engineered and awkward to have a constant server process running for a script that we'll be using once a day.</p>
 
 	<p>The alternative to this is to have an <b>embedded database</b>. An embedded database is essentially just a file on your computer, but it comes with a program that makes interacting with it much faster and more convenient than simply reading and writing to a <code>.txt</code> or <code>.json</code> file on your own. This makes it ideal for programs which simply need a place to store their data. Tons of applications use SQLite as their database&mdash;the Notes app on MacOS is one example.</p>
+	<h2 class="title">Comparison</h2>
+	<p>Between SQL and NoSQL, it would be preferable for us to have a NoSQL database for a couple of reasons:</p>
+	<ul>
+	  <li>We don't know what data we'll end up using in the future. The TDA API returns us a ton of info, and although right now we're only interested in portfolio value and positions, there might come a day where we want to use the other fields. This means that it would be hard to define a schema right now, and we'd be better off just saving all the data.</li>
+	  <li>Even if we did know exactly what we wanted, the architecture of the database would be kind of clumsy. Recall that SQL does not have a "list" type, so all our open positions would have to be in a separate table with foreign key relations to the main table. We don't have to do anything special with a NoSQL database&mdash;we could simply dump the data from the API straight to the database.</li>
+	</ul>
+
+	<p>Between a regular and an embedded database, we'd prefer an embedded database. Our app is small and self-contained, so it's probably not worth the extra computing power to run a separate server process.</p>
+
+	<p>Unfortunately, I couldn't find any embedded NoSQL databases that were similar in performance to SQLite. Therefore, I think that the next best thing we can do is to encode our JSON data as a string, and save it in a <code>text</code>-typed column in our SQLite database.</p>
+	
 
 	<!-- Nav Footer -->
 	<nav class="level" style="padding-top: 30px">

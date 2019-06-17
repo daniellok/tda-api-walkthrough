@@ -10,8 +10,9 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <!-- Highlight.js -->
     <link rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+	  href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/atom-one-dark-reasonable.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
     <!-- Description -->
     <meta name="description" content="TDA API Walkthrough" />
@@ -52,6 +53,84 @@
       <!-- Content -->
       <div class="container column is-fullheight is-marginless content">
 	<h1 class="title is-2">Building the App: Authentication</h1>
+	TDA's authentication process follows what was described in the <a href="/tda-api-walkthrough/background/oauth2">OAuth 2.0</a> page. Here, we'll go through the flow step-by-step to obtain the access token.
+	
+	<h3 class="title">Step 1: Getting the Authorization Code</h3>
+	<p>As far as I can tell, this part needs to be manual because the TDA website uses JavaScript to populate some hidden form fields. If you try to post the form data through <code>requests</code>, the website doesn't work properly.</p>
+	<p>It seems like this is more or less standard practice with OAuth 2.0 apps, so unfortunately if you want to get around this, you'll have to use some sort of browser emulator like <a href="https://www.seleniumhq.org/">Selenium</a>. I don't have any experience with this as of now, so we'll have to make do with getting the authorization code ourselves. On the bright side, we should theoretically only have to do this once, since the script can re-authenticate itself with a refresh token.</p>
+
+	<p>In order to get the authorization code, just visit this URL:</p>
+	<pre class="is-paddingless"><code class="html" style="padding-left:20px; padding-right:20px">
+https://auth.tdameritrade.com/auth?response_type=code&redirect_uri={YOUR REDIRECT URI}&client_id={YOUR CLIENT ID}
+	</code></pre>
+
+	<p><b>Redirect URI</b>: This should be whatever you put in your app settings. For example: <code>https://127.0.0.1</code></p>
+	<p><b>Client ID</b>: This should be whatever you put in your app settings with the addition of <code>@AMER.OAUTHAP</code>. For example, if my app name was <code>TRACKER</code>, this would be <code>TRACKER@AMER.OAUTHAP</code>.</p>
+
+	<p>However, we need to <a href="https://meyerweb.com/eric/tools/dencoder/">URL encode</a> these two fields before putting them in the address bar. Save this URL somewhere so it's easy to access if you ever need it, it'll never change. Once you log in, you should be redirected to a page with the following URL:</p>
+
+	<pre class="is-paddingless"><code class="html" style="padding-left:20px; padding-right:20px">
+{YOUR REDIRECT URL}/?code={ENCODED AUTH CODE}
+	</code></pre>
+
+	<p>Copy <code>{ENCODED AUTH CODE}</code> and paste it into a file called <code>auth_code.txt</code>. We will be using this file in the next few steps. From here on out, everything will be automated by our script.</p>
+
+	<h3 class="title">Step 1.2: Getting the Authorization Token</h3>
+	<p>The authorization code is what we use to get the authorization token. We <i>should</i> only need to do this once, but you never know, so let's build a script to do it anyway.</p>
+
+	<h4>Overview</h4>
+
+	<p>The API endpoint (the URL we need to contact) for retrieving the authorization token is:</p>
+
+	<pre class="is-paddingless"><code class="html" style="padding-left:20px; padding-right:20px">
+https://api.tdameritrade.com/v1/oauth2/token
+	</code></pre>
+
+	<p>We need to send a POST request to this URL with the following parameters:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+params = {
+    "client_id"    : # Your client ID as above,
+    "redirect_uri" : # Your redirect URI,
+    "access_type"  : "offline",
+    "grant_type"   : "authorization_code",
+    "code"         : # read `auth_code.txt` and URL-decode it.
+}
+	</code></pre>
+
+	<p>Once we do this, TDA will respond with our auth token in JSON format. We will need to parse this into a python dict (the equivalent data structure), and save it for future use.</p>
+
+	<h4>Detailed Walkthrough</h4>
+
+	<p>Python has a number of libraries that do what we need to do:</p>
+
+	<ol>
+	  <li>For working with HTTP requests, we have <code>requests</code>.</li>
+	  <li>For URL encoding and decoding, we have <code>urllib.parse</code>. Encoding is done by the <code>quote()</code> function, and decoding is done with the <code>unquote()</code> function.</li>
+	  <li>For saving objects, there is <code>pickle</code>.</li>
+	</ol>
+
+	<p>In the same directory as <code>auth_code.txt</code>, create a file called <code>fetch_token.py</code>. This will contain all the logic we need to obtain the auth token. At the top of the file, include the following lines:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+import requests
+from urllib.parse import quote, unquote
+	</code></pre>
+
+	<p>Declare the params variable as above, and fill in whatever you need to fill in. It is a python dictionary (<code>dict</code>), and all the fields are strings. Once you've done that, use the <code>requests.post()</code> method to send the <code>POST</code> request. The format is:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+# note, in python, "named arguments", i.e. arguments with the "=" are optional.
+# if not provided, they have defaults. in this case, we don't need headers.
+response = requests.post(url, data=params, headers=headers)
+	</code></pre>
+
+	<p>The access token will be contained in the response object. You can access it with <code>response.json()</code> (requests has a built-in JSON parser). This will return a <code>dict</code>, and you'll be able to see the <code>access_token</code> and <code>refresh_token</code> fields.</p>
+
+	<p>The <code>access_token</code> is the auth token---we include this with our requests in order to authenticate ourselves. The <code>refresh_token</code> is what we use to obtain new auth tokens without having to log in again.</p>
+
+	<h3 class="title">Step 1.3: Saving the Tokens to Disk</h3>
+	<p>Save the <code>dict</code> using <code>pickle</code>, and call the file something like <code>tokens.pickle</code>. You'll want to use the <code>pickle.dump()</code> function.</p>
 
 	<!-- Nav Footer -->
 	<nav class="level" style="padding-top: 30px">
