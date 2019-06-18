@@ -43,6 +43,7 @@
 	      <li><a class="is-active">Authentication</a></li>
 	      <li><a href="/tda-api-walkthrough/building/data-retrieval">Data Retrieval</a></li>
 	      <li><a href="/tda-api-walkthrough/building/saving-to-disk">Saving to Disk</a></li>
+<li><a href="/tda-api-walkthrough/building/automation">Automation</a></li>
 	    </ul>
 	  </li>
 	  <li><a href="/tda-api-walkthrough/visualization">Data Visualization</a></li>
@@ -75,7 +76,7 @@ https://auth.tdameritrade.com/auth?response_type=code&redirect_uri={YOUR REDIREC
 
 	<p>Copy <code>{ENCODED AUTH CODE}</code> and paste it into a file called <code>auth_code.txt</code>. We will be using this file in the next few steps. From here on out, everything will be automated by our script.</p>
 
-	<h3 class="title">Step 1.2: Getting the Authorization Token</h3>
+	<h3 class="title">Step 2: Getting the Authorization Token</h3>
 	<p>The authorization code is what we use to get the authorization token. We <i>should</i> only need to do this once, but you never know, so let's build a script to do it anyway.</p>
 
 	<h4>Overview</h4>
@@ -110,14 +111,16 @@ params = {
 	  <li>For saving objects, there is <code>pickle</code>.</li>
 	</ol>
 
-	<p>In the same directory as <code>auth_code.txt</code>, create a file called <code>fetch_token.py</code>. This will contain all the logic we need to obtain the auth token. At the top of the file, include the following lines:</p>
+	<p>In the same directory as <code>auth_code.txt</code>, create a file called <code>get_tokens.py</code>. This will contain all the logic we need to obtain the auth token. At the top of the file, include the following lines:</p>
 
 	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
 import requests
 from urllib.parse import quote, unquote
 	</code></pre>
 
-	<p>Declare the params variable as above, and fill in whatever you need to fill in. It is a python dictionary (<code>dict</code>), and all the fields are strings. Once you've done that, use the <code>requests.post()</code> method to send the <code>POST</code> request. The format is:</p>
+	<p>Declare the params variable as above, and fill in whatever you need to fill in. It is a python dictionary (<code>dict</code>), and all the fields are strings. Note that you may need to perform a <code>.strip()</code> on the authentication code after reading it from the file, as some text editors will automatically add a newline character (<code>'\n'</code>).</p>
+	
+	<p>Once you've done that, use the <code>requests.post()</code> method to send the <code>POST</code> request. The format is:</p>
 
 	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
 # note, in python, "named arguments", i.e. arguments with the "=" are optional.
@@ -129,8 +132,10 @@ response = requests.post(url, data=params, headers=headers)
 
 	<p>The <code>access_token</code> is the auth token---we include this with our requests in order to authenticate ourselves. The <code>refresh_token</code> is what we use to obtain new auth tokens without having to log in again.</p>
 
-	<h3 class="title">Step 1.3: Saving the Tokens to Disk</h3>
+	<h3 class="title">Step 3: Saving the Tokens to Disk</h3>
 	<p>Save the <code>dict</code> using <code>pickle</code>, and call the file something like <code>tokens.pickle</code>. You'll want to use the <code>pickle.dump()</code> function.</p>
+
+	<p>Once all of this is done, run the script! In your terminal, run <code>python get_tokens.py</code>. You should now have a <code>tokens.pickle</code> file containing your access and refresh tokens (you won't be able to read it with <code>cat</code>, load it in using Python to check its contents).</p>
 
 	<!-- Nav Footer -->
 	<nav class="level" style="padding-top: 30px">

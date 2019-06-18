@@ -10,8 +10,9 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <!-- Highlight.js -->
     <link rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/atom-one-dark-reasonable.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
     <!-- Description -->
     <meta name="description" content="TDA API Walkthrough" />
@@ -42,6 +43,7 @@
 	      <li><a href="/tda-api-walkthrough/building/authentication">Authentication</a></li>
 	      <li><a href="/tda-api-walkthrough/building/data-retrieval">Data Retrieval</a></li>
 	      <li><a class="is-active">Saving to Disk</a></li>
+	      <li><a href="/tda-api-walkthrough/building/automation">Automation</a></li>
 	    </ul>
 	  </li>
 	  <li><a href="/tda-api-walkthrough/visualization">Data Visualization</a></li>
@@ -53,6 +55,56 @@
       <div class="container column is-fullheight is-marginless content">
 	<h1 class="title is-2">Building the App: Saving to Disk</h1>
 
+	<p>As mentioned previously, we want to save the data in an SQLite database. Python comes with a built-in <a href="https://docs.python.org/3/library/sqlite3.html">sqlite3</a> library, so it's easy for us to work with. This section of the walkthrough is particularly sparse on code examples because if I were to include them, there wouldn't be much left for you to do. Therefore, it may not be as clear. If you have any questions here, just let me know!</p>
+
+	<h4>Step 1: Creating the Database</h4>
+	<p>The first thing we need to do is, of course, to create the databse. We can do this from the command line by simply typing <code>sqlite3 portfolioData.db</code>. This creates a file in the current directory called <code>portfolioData.db</code>. Additionally, it will open the SQLite command-line interface (CLI) so that you can interact with it. Effectively, you're "in the mainframe". Note that this might be slightly different for Windows and <code>sqlite3.exe</code>. We can work together on this part to figure it out.</p>
+
+	<h4>Step 2: Creating a Table</h4>
+	<p>Once we've created the database file, we'll need to <a href="https://www.techonthenet.com/sql/tables/create_table.php">create a table</a>. We'll call this table (for lack of a better name) <code>data</code>, and it will have two columns:
+
+	  <ol>
+	    <li><code>timestamp</code>, of type <code>TIMESTAMP</code></li>
+	    <li><code>stringifiedJSON</code>, of type <code>TEXT</code></li>
+	  </ol>
+
+	<h4>Step 3: Inserting our JSON into the Table</h4>
+	<p>For this, we go back to <code>update.py</code>. We'll need to have the following lines at the top:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+import requests                # for requests
+import sqlite3                 # for interacting with our DB
+from json import dumps         # for stringifying our JSON
+from datetime import datetime  # for getting the current timestamp
+	</code></pre>
+
+      <p>Working with the <code>sqlite3</code> library requires us to do a few things (see the documentation for an example):</p>
+
+	<ol>
+	  <li>Connect to the database (creating a <code>Connection</code> object)</li>
+	  <li>Create a <code>Cursor</code> object from the <code>Connection</code> object</li>
+	  <li>Execute statements using the <code>Cursor</code>'s <code>execute()</code> method</li>
+	  <li>Commit the statements with the <code>Connection</code>'s <code>commit()</code> method</li>
+	  <li>Close the connection</li>
+	</ol>
+
+	<p>Number 3 is the only troublesome part&mdash;what we're looking to do is <a href="https://www.techonthenet.com/sql/insert.php">insert a row</a> in the database, and for that we'll need to write some SQL. Check the documentation for the syntax.</p>
+	<p>In order to get the current timestamp, we can call the <code>datetime.now()</code> function. We don't need to do any special processing for this data structure&mdash;SQLite's <code>TIMESTAMP</code> data type works nicely with the <code>datetime</code> library's <code>datetime.datetime</code> type.</p>
+
+	<p>In order to convert <code>response.json()</code> to a string, we'll need to use the <code>dumps</code> function that we imported earlier (it stands for <b>dump</b> <b>s</b>tring). Simply call:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+stringified = dumps(response.json())
+	</code></pre> 
+
+	<p>Once all this is done, call your script from the terminal using <code>python update.py</code>. You should have a new row in the <code>data</code> table in <code>portfolioData.db</code>! In order to check, connect to the database with <code>sqlite3.exe</code>, and type (without the prompt):</p>
+
+	<pre class="is-paddingless"><code class="sql" style="padding-left:20px; padding-right:20px">
+sqlite> SELECT * FROM data;
+	</code></pre>
+
+	<p>If everything was successful, the console should output some data.</p>
+	
 	<!-- Nav Footer -->
 	<nav class="level" style="padding-top: 30px">
 	  <div class="level-item level-left">
@@ -66,8 +118,8 @@
 	  </div>
 	  <div class="level-item level-right">
 	    <a class="button is-outlined is-borderless is-info"
-	       href="/tda-api-walkthrough/visualization">
-	      <span>Data Visualization</span>
+	       href="/tda-api-walkthrough/building/automation">
+	      <span>Automation</span>
 	      <span class="icon">
 		<i class="fas fa-angle-right"></i>
 	      </span>

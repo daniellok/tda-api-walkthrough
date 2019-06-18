@@ -10,8 +10,9 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <!-- Highlight.js -->
     <link rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/atom-one-dark-reasonable.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
     <!-- Description -->
     <meta name="description" content="TDA API Walkthrough" />
@@ -42,6 +43,7 @@
 	      <li><a href="/tda-api-walkthrough/building/authentication">Authentication</a></li>
 	      <li><a class="is-active">Data Retrieval</a></li>
 	      <li><a href="/tda-api-walkthrough/building/saving-to-disk">Saving to Disk</a></li>
+<li><a href="/tda-api-walkthrough/building/automation">Automation</a></li>
 	    </ul>
 	  </li>
 	  <li><a href="/tda-api-walkthrough/visualization">Data Visualization</a></li>
@@ -52,7 +54,73 @@
       <!-- Content -->
       <div class="container column is-fullheight is-marginless content">
 	<h1 class="title is-2">Building the App: Data Retrieval</h1>
+	<p>Great! We have everything we need to start pulling data from the API. TDA has a bunch of data available, but the one we're concerned with is <a href="https://developer.tdameritrade.com/apis">Accounts and Trading</a>&mdash;more specifically, just <a href="https://developer.tdameritrade.com/account-access/apis">Accounts</a>.</p>
 
+	<h3 class="title">Overview</h3>
+	<p>If you have multiple accounts, you'll probably want to use <a href="https://developer.tdameritrade.com/account-access/apis/get/accounts-0">this endpoint</a>. We need to send a <code>GET</code> request to:
+
+	  <pre class="is-paddingless"><code class="html" style="padding-left:20px; padding-right:20px">
+https://api.tdameritrade.com/v1/accounts
+	  </code></pre>
+
+	<p>Of course, we need to include our auth token somewhere in the request, and TDA has stipulated that we do this through one of the <b>request headers</b>. We need to set the following:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+headers = { "Authorization" : "Bearer " + auth_token }
+#                                    ^ note the space!
+	</code></pre>
+
+	<p>Then, we send it together with our request. The <code>requests.get()</code> function is pretty much the same as the <code>post()</code> function, with the exception that instead of <code>data</code>, we use <code>params</code> (recall that <code>GET</code> requests use query strings instead of a body to submit data):</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+response = requests.get(url, params=params, headers=headers)
+	</code></pre>
+
+	<p>For our purposes, these <code>params</code> are used if we want to track the positions or orders in our account. Without them, the API will simply return us our account balances. We simply need to set:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+params = { "fields" : "positions,orders" }
+	</code></pre>
+
+	<h3 class="title">Detailed Walkthrough</h3>
+	<p>Let's create a new file in the project directory called <code>update.py</code>. This will be the script we run every time we want to pull new data. In this section we'll go through all the necessary steps to pull data from the API.</p>
+	
+	<h4>Step 1: Refreshing the Auth Token</h4>
+	<p>As specified by the OAuth 2.0 protocol, auth tokens are supposed to be short-lived. The TDA auth tokens have a default lifetime of 30 minutes, so every time we run the script, we'll probably have to use our refresh token to renew it. In order to do this, we need to make a <code>POST</code> request to the authentication API:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+https://api.tdameritrade.com/v1/oauth2/token
+	</code></pre>
+
+	<p>However, the parameters will be different than in the previous section. Since we're using a refresh token instead of an authentication code, the params should be set as:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+params = {
+    "client_id"     : # Your client ID as above,
+    "redirect_uri"  : # Your redirect URI,
+    "access_type"   : "offline",
+    "grant_type"    : "refresh_token",
+    "refresh_token" : # Read the refresh token from tokens.pickle
+}
+	</code></pre>
+
+	<p>Once we've set these params, make the `POST` request. We'll receive a new set of auth and refresh tokens, so let's go ahead and overwrite `tokens.pickle` with the updated tokens.</p>
+
+	<h4>Step 2: Pulling the Data</h4>
+
+	<p>Now that we have a fresh auth token, we can pull data from the Accounts API. Set the params and headers as described above, and use <code>requests.get()</code> to send the <code>GET</code> request. The response should contain all the information we need (once again, look in <code>response.json()</code>).</p>
+
+	<h4>Step 3: Interpreting the Response</h4>
+
+	<p>If you take a look at <code>response.json()</code>, it's kind of a wall of text. You can copy and paste the result into a <a href="http://jsonprettyprint.com/">JSON pretty printer</a> to format it nicely (make sure to enclose the string in double-quotes, e.g. <code>"string goes here"</code>), and this will help in understanding the structure of the data.</p>
+
+	<p>Essentially, the data we get back is a big nested object---<code>dicts</code> within <code>dicts</code>. In Python, you can access inner elements with sequential square brackets:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+data = response.json()  # name the variable for easy access
+data["securitiesAccount"]["currentBalances"]["liquidationValue"]
+	</code></pre>
+	
 	<!-- Nav Footer -->
 	<nav class="level" style="padding-top: 30px">
 	  <div class="level-item level-left">
