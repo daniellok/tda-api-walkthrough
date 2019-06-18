@@ -10,9 +10,10 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <!-- Highlight.js -->
     <link rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/atom-one-dark-reasonable.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
-
+    <script>hljs.initHighlightingOnLoad();</script>
+    
     <!-- Description -->
     <meta name="description" content="TDA API Walkthrough" />
     <title>TDA API Walkthrough</title>
@@ -53,7 +54,106 @@
       <!-- Content -->
       <div class="container column is-fullheight is-marginless content">
 	<h1 class="title is-2">Data Visualization</h1>
+	<p>This section will bring you through how to read data from the SQLite database, and visualize it in the form of a graph. We'll just be using the default axis scales that Matplotlib deems acceptable. Of course, it is possible to tweak them, but it a bit of a hassle. If you're interested, let me know and I will direct you to some resources.</p>
 
+	<p>To start, let's create a new file in the directory called <code>graph.py</code>. At the top, we'll need to import the following libraries:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+import sqlite3                   # to interact with the DB
+import json                      # to parse the stringified JSON
+from datetime import datetime    # to parse the timestamps
+import matplotlib.pyplot as plt  # to plot (we name it `plt` for short)
+	</code></pre>
+
+	<h3 class="title">Step 1: Reading from the SQLite Database</h3>
+	<p>Reading from the database is much the same as writing to it. The <code>sqlite3</code> <a href="https://docs.python.org/3/library/sqlite3.html">documentation</a> has an example of how to do it. We need to:</p>
+
+	<ol>
+	  <li>Connect to <code>data.db</code>. (Note: use the following optional argument when connecting. It makes the <code>sqlite3</code> library parse the <code>timestamp</code> column as a <code>datetime.datetime</code> object)
+	    <pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+conn = sqlite3.connect("data.db", detect_types=sqlite3.PARSE_DECLTYPES)
+	    </code></pre>
+	  </li>
+	  <li>Create a <code>Cursor</code> object from the <code>Connection</code></li>
+	  <li>Use the cursor to execute the following query:
+	    <pre class="is-paddingless"><code class="sql" style="padding-left:20px; padding-right:20px">
+SELECT * FROM data;
+	    </code></pre>
+	  </li>
+	  <li>Call the cursor's <code>.fetchall()</code> method to retrieve all the results of the query</li>
+	  <li>Close the connection</li>
+	</ol>
+
+	<p>Be sure to store the results of Step 4 in a variable (call it <code>data</code>)&mdash;this is the data we're going to plot.</p>
+
+	<h3 class="title">Step 2: Pre-processing the data</h3>
+	<p>The <code>.fetchall()</code> method returns us our data as a list of <b>tuples</b> (pairs). Each pair represents a row of data&mdash;the first item of the pair is the timestamp, and the second item is the stringified JSON data.</p>
+
+	<p>In order to use Matplotlib, we need to separate the data into the x-values and the y-values. We'd like the x-values to be the timestamps, and the y-values to be the value of our portfolio. Thus, we'll separate the pairs using <b>list comprehension</b>&mdash;a powerful tool that Python provides to work with lists.</p>
+
+	<p>List comprehension can often be used in places where you might use a for loop. For example, consider the following code:</p>
+	
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+times = []
+
+for pair in data:
+    results.append(pair[0])
+	</code></pre>
+
+	<p>The code extracts the first element of every tuple in <code>data</code>, and places the result in a new array called <code>times</code>. With list comprehension, this becomes a one-liner:</p>
+	
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+times = [ pair[0] for pair in data ]
+	</code></pre>
+
+	<p>Of course, however you want to do it is just a matter of style&mdash;the end result is the same. The code above separates out the timestamps from the data, now you'll also need to separate out the portfolio values.</p>
+
+	<p>In order to do this, remember that the second element in each pair is a big stringified JSON. You'll need to do a few things:</p>
+
+	<ol>
+	  <li>Parse the string using <code>json.loads()</code></li>
+	  <li>If you used the "get all linked accounts" API from TDA, then the result of parsing will be a list of account summaries. For each account in the list, recall that the total portfolio value is stored in:
+	    <pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+account["securitiesAccount"]["currentBalances"]["liquidationValue"]
+	    </code></pre>
+	  </li>
+	  <li>You may want to sum up all the values, or you might want to create a separate list for each account. It's totally up to you!</li>
+	</ol>
+
+	<h3 class="title">Plotting the Data</h3>
+	<p>Once you have your list of x-values (<code>times</code>) and your list of y-values (I'll refer to it as <code>portfolioValues</code>, but you might have named it something different), we can begin to plot.</p>
+
+	<p>Matplotlib handles a lot of things automatically, so the most basic way to generate a plot is simply to enter the following line:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+plt.plot(times, portfolioValues)
+plt.show()
+	</code></pre>
+
+	<p>If you run <code>visualize.py</code> now, you'll see a (poorly formatted) graph of your data! However, we'd like to make the graph as pretty as possible, so we'll want to add a few things. Modifications to the graph can be made by calling various methods of the <code>plt</code> module. Example:</p>
+
+	<pre class="is-paddingless"><code class="python" style="padding-left:20px; padding-right:20px">
+plt.plot(times, portfolioValues)
+
+plt.title("Portfolio Value")        # add a title
+plt.xticks(rotation=45,             # rotate the x-axis labels 45 degrees
+           ha="right",              # align the x-axis labels to the right
+           rotation_mode="anchor")  # use a different anchor point for rotation
+plt.tight_layout()	            # make sure the graph doesn't cut out labels
+
+plt.show()
+	</code></pre>
+
+	<p>Unfortunately I'm not sure if there's a super intuitive way to explain this. I found out how to do most of this stuff from googling it, so if there's any features you want to add, just let me know and I'll try to give you tips on how you might find out yourself.</p>
+
+	<p>That's all! Any time you want to generate a graph of your portfolio values, just run <code>python visualize.py</code> in your terminal, and you should end up with a nice plot. For extensions to this project, you might want to look into:</p>
+
+	<ul>
+	  <li>Making a web-app that allows you to interactively change the date ranges</li>
+	  <li>Changing the visualization to a stacked-line chart of the values of your positions</li>
+	</ul>
+	
+	
 	<!-- Nav Footer -->
 	<nav class="level" style="padding-top: 30px">
 	  <div class="level-item level-left">
