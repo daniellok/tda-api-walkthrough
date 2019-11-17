@@ -120,7 +120,7 @@ account["securitiesAccount"]["currentBalances"]["liquidationValue"]
 	  <li>You may want to sum up all the values, or you might want to create a separate list for each account. It's totally up to you!</li>
 	</ol>
 
-	<h3 class="title">Plotting the Data</h3>
+	<h3 class="title">Step 3: Plotting the Data</h3>
 	<p>Once you have your list of x-values (<code>times</code>) and your list of y-values (I'll refer to it as <code>portfolioValues</code>, but you might have named it something different), we can begin to plot.</p>
 
 	<p>Matplotlib handles a lot of things automatically, so the most basic way to generate a plot is simply to enter the following line:</p>
@@ -146,11 +146,14 @@ plt.show()
 
 	<p>Unfortunately I'm not sure if there's a super intuitive way to explain this. I found out how to do most of this stuff from googling it, so if there's any features you want to add, just let me know and I'll try to give you tips on how you might find out yourself.</p>
 
-	<p>That's all! Any time you want to generate a graph of your portfolio values, just run <code>python visualize.py</code> in your terminal, and you should end up with a nice plot. For extensions to this project, you might want to look into:</p>
+	<p>That's all! Any time you want to generate a graph of your portfolio values, just run <code>python visualize.py</code> in your terminal, and you should end up with a nice plot.</p>
+
+	<p>Hopefully you've learned some stuff in the process of building this script. Being able to read documentation and figure out how to do stuff is one of the most important skills in coding, so hopefully you've managed to get some practice with that too. From here, you can go any number of ways. You might think of a completely new project, or you might choose to flesh this one out a little more. For extensions to this project, you might want to look into:</p>
 
 	<ul>
-	  <li>Making a web-app that allows you to interactively change the date ranges</li>
-	  <li>Changing the visualization to a stacked-line chart of the values of your positions</li>
+	  <li>Making a web-app that allows you to interactively change the date ranges, mouseover data points to see the exact values, and more!</li>
+	  <li>Changing the visualization to a stacked-line chart of the values of your positions. This might be interesting to track your moves.</li>
+	  <li>Making a Telegram bot that notifies you if your script fails to run</li>
 	</ul>
 	
 	
